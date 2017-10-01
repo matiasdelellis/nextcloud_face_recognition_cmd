@@ -38,13 +38,13 @@ def image_find_faces(filename, known_encodings, known_names):
         return
 
     for unknown_encoding, location in zip (face_encodings, face_locations):
+        top, right, bottom, left = location
         distances = face_recognition.face_distance(known_encodings, unknown_encoding)
         result = list(distances <= 0.6)
         if True in result:
             for distance, name in zip(distances, known_names):
                 if distance > 0.6:
                     continue
-                top, right, bottom, left = location
                 print("{},{},{},{},{},{},{}".format(filename, name, distance, top, right, bottom, left))
                 data['faces-locations'].append({
                      'filemame': filename,
@@ -57,7 +57,6 @@ def image_find_faces(filename, known_encodings, known_names):
                 })
         else:
             name = 'Unknown'
-            top, right, bottom, left = location
             distance = 1.0
             print("{},{},{},{},{},{},{}".format(filename, name, distance, top, right, bottom, left))
             data['faces-locations'].append({
