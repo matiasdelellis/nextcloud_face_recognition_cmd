@@ -34,12 +34,31 @@ def image_find_faces(filename, known_encodings, known_names):
         face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model="hog")
         face_encodings = face_recognition.face_encodings(image, face_locations)
     except:
-         return
+        print("Fail to analyze: {}".format(filename))
+        return
 
-    for unknown_encoding in face_encodings:
+    for unknown_encoding, location in zip (face_encodings, face_locations):
         distances = face_recognition.face_distance(known_encodings, unknown_encoding)
-        for distance, name, location in zip(distances, known_names, face_locations):
+        result = list(distances <= 0.6)
+        if True in result:
+            for distance, name in zip(distances, known_names):
+                if distance > 0.6:
+                    continue
+                top, right, bottom, left = location
+                print("{},{},{},{},{},{},{}".format(filename, name, distance, top, right, bottom, left))
+                data['faces-locations'].append({
+                     'filemame': filename,
+                     'name': name,
+                     'distance': distance,
+                     'top': top,
+                     'right': right,
+                     'bottom': bottom,
+                     'left': left
+                })
+        else:
+            name = 'Unknown'
             top, right, bottom, left = location
+            distance = 1.0
             print("{},{},{},{},{},{},{}".format(filename, name, distance, top, right, bottom, left))
             data['faces-locations'].append({
                 'filemame': filename,
@@ -71,7 +90,7 @@ def analyze_list (args):
             if filename.lower().endswith(('.png','.jpg','.jpeg')):
                 image_find_faces (filename, known_encodings, known_names)
     if True:
-        print (json.dumps(data, indent=2))
+        print (json.dumps(data, ensure_ascii=False, indent=2))
     else:
         #jsonfile = os.path.join(a.folder, '.faces.json')
         print('Saving the .faces.json file with the information')
