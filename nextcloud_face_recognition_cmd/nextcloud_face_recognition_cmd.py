@@ -101,7 +101,7 @@ def analyze_list (args):
             json.dump(data, f, indent=2)
     return 0
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='Analyze pictures in search of faces')
     parser.add_argument('operation', nargs='+', choices=['analyze'], help='Operation')
     parser.add_argument('--search', nargs='+', help='List of pictures or folders to search faces')
@@ -113,3 +113,6 @@ if __name__ == '__main__':
     }[args.operation[0]]
 
     exit(op(args))
+
+if __name__ == '__main__':
+    main()
