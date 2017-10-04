@@ -1,4 +1,4 @@
-# face_recognition_cmd
+# nextcloud_face_recognition_cmd
 Yet another tool to analyze images to search for faces, which tries to be useful for nextcloud..
 
 In principle the idea is only to detect the faces ... Later how to show it in the interface, it is debatable ..
