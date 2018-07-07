@@ -8,7 +8,7 @@ data = {}
 
 def response_append_face(filename, name, distance, top, right, bottom, left):
     data['faces-locations'].append({
-         'filemame': filename,
+         'filename': filename,
          'name': name,
          'distance': distance,
          'top': top,
