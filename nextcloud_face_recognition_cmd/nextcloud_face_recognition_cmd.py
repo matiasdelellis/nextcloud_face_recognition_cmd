@@ -6,7 +6,7 @@ import json
 
 data = {}
 
-def response_append_face(filename, name, distance, top, right, bottom, left):
+def response_append_face(filename, name, distance, top, right, bottom, left, encoding=None):
     data['faces-locations'].append({
          'filename': filename,
          'name': name,
@@ -14,7 +14,8 @@ def response_append_face(filename, name, distance, top, right, bottom, left):
          'top': top,
          'right': right,
          'bottom': bottom,
-         'left': left
+         'left': left,
+         'encoding': encoding.tolist() if encoding is not None else None
     })
 
 def response_append_status(message):
@@ -57,7 +58,7 @@ def image_find_faces(filename, known_encodings, known_names):
         return
 
     if len(face_locations) == 0:
-        response_append_face(filename, 'empty', 1.0, 0, 0, 0, 0)
+        response_append_face(filename, 'empty', 0.0, 0, 0, 0, 0)
         return
 
     for unknown_encoding, location in zip (face_encodings, face_locations):
@@ -67,9 +68,9 @@ def image_find_faces(filename, known_encodings, known_names):
         if True in result:
             for distance, name in zip(distances, known_names):
                 if distance <= 0.6:
-                    response_append_face(filename, name, distance, top, right, bottom, left)
+                    response_append_face(filename, name, 0.0, top, right, bottom, left, unknown_encoding)
         else:
-            response_append_face(filename, 'Unknown', 1.0, top, right, bottom, left)
+            response_append_face(filename, 'unknown', 1.0, top, right, bottom, left, unknown_encoding)
 
 def folder_find_faces(path, known_encodings, known_names):
     if path.startswith('.'):
