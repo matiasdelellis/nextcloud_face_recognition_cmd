@@ -27,7 +27,7 @@ def response_append_status(message):
 def image_find_faces(filename):
     try:
         image = face_recognition.load_image_file(filename)
-        face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model="")
+        face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model="hog")
         face_encodings = face_recognition.face_encodings(image, face_locations)
     except:
         response_append_status("Fail to analyze: {}".format(filename))
