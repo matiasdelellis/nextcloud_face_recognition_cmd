@@ -2,6 +2,7 @@
 import argparse
 import os, re
 import face_recognition
+import dlib
 import json
 
 data = {}
@@ -26,7 +27,7 @@ def response_append_status(message):
 def image_find_faces(filename):
     try:
         image = face_recognition.load_image_file(filename)
-        face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model="hog")
+        face_locations = face_recognition.face_locations(image, number_of_times_to_upsample=0, model="")
         face_encodings = face_recognition.face_encodings(image, face_locations)
     except:
         response_append_status("Fail to analyze: {}".format(filename))
@@ -68,14 +69,30 @@ def analyze_list (args):
             json.dump(data, f, indent=2)
     return 0
 
+def print_status (args):
+    version = dlib.__version__
+    data['dlib-version'] = version
+    data['cuda-support'] = dlib.DLIB_USE_CUDA if version >= '19.9.0' else False
+    data['avx-support'] = dlib.DLIB_HAVE_AVX if version >= '19.9.0' else False
+    data['neon-support'] = dlib.DLIB_HAVE_NEON if version >= '19.9.0' else False
+
+    if True:
+        print (json.dumps(data, ensure_ascii=False, indent=2))
+    else:
+        with open('staus.json', 'w') as f:
+            json.dump(data, f, indent=2)
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description='Analyze pictures in search of faces')
-    parser.add_argument('operation', nargs='+', choices=['analyze'], help='Operation')
+    parser.add_argument('operation', nargs='+', choices=['analyze', 'status'], help='Operation')
     parser.add_argument('--search', nargs='+', help='List of pictures or folders to search faces')
 
     args = parser.parse_args()
     op = {
         'analyze': analyze_list,
+        'status': print_status,
     }[args.operation[0]]
 
     exit(op(args))
