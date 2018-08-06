@@ -73,8 +73,8 @@ def print_status (args):
     version = dlib.__version__
     data['dlib-version'] = version
     data['cuda-support'] = dlib.DLIB_USE_CUDA if version >= '19.9.0' else False
-    data['avx-support'] = dlib.DLIB_HAVE_AVX if version >= '19.9.0' else False
-    data['neon-support'] = dlib.DLIB_HAVE_NEON if version >= '19.9.0' else False
+    data['avx-support'] =  dlib.USE_AVX_INSTRUCTIONS if version >= '19.9.0' else False
+    data['neon-support'] = dlib.USE_NEON_INSTRUCTIONS if version >= '19.9.0' else False
 
     if True:
         print (json.dumps(data, ensure_ascii=False, indent=2))
