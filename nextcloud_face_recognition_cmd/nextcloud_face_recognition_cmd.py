@@ -32,7 +32,10 @@ class NcFaceRecognition:
         })
 
     def findFaces(self, filename):
-        img = dlib.load_rgb_image(filename)
+        try:
+            img = dlib.load_rgb_image(filename)
+        except:
+            return
 
         dets = self.detector(img, 1)
         if len(dets) == 0:
